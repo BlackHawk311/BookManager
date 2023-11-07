@@ -1,0 +1,25 @@
+services:
+  web:
+    # use the current (file) context
+    build: . # will target the ./Dockerfile
+    ports:
+      # {host port}:{container port} -> expose container port onto host port
+      # so that we can run http query : "http://localhost:8000/..."
+      - "8000:8000"
+    # bind a volume so that when we change something into our files, on host machine
+    # it is synced with the container files
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+  bdd:
+    # https://hub.docker.com/_/postgres
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    # Set up some variable known by postgres image
+    # so that we can easily sets up (dev) connection easily.
+    environment:
+      POSTGRES_USER: john
+      POSTGRES_PASSWORD: example
